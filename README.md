@@ -21,4 +21,4 @@ To run the script on a remote machine using `curl`, follow these steps:
 Run the following command on your target machine to download and execute the script:
 
 ```sh
-curl -sL https://raw.githubusercontent.com//MISTERNEGATIVE21/oracle-freetier-portsunlocker/installer.sh | sudo bash
+curl -sL https://raw.githubusercontent.com/MISTERNEGATIVE21/oracle-freetier-portsunlocker/installer.sh -o installer.sh
