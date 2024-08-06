@@ -55,6 +55,44 @@ install_firewalld() {
     fi
 }
 
+#!/bin/bash
+
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Function to display ASCII art intro with gradient
+display_intro() {
+    clear
+    echo -e "\e[1;33m"
+    figlet "EASY ORACLE-SERVER" | toilet --filter border:metal
+    echo -e "\e[0m"
+}
+
+# Call the function to display the intro
+display_intro
+
+# Determine the OS and install firewalld if not installed
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$ID
+else
+    OS=$(uname -s)
+fi
+
+install_firewalld() {
+    if [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
+        sudo apt-get update
+        sudo apt-get install -y firewalld
+    elif [ "$OS" = "centos" ] || [ "$OS" = "rhel" ] || [ "$OS" = "fedora" ]; then
+        sudo yum install -y firewalld
+    else
+        echo "Unsupported OS"
+        exit 1
+    fi
+}
+
 # Check if firewalld is installed, if not, install it
 if ! command_exists firewalld; then
     echo "firewalld is not installed. Installing..."
@@ -152,7 +190,6 @@ install_froxlor() {
     fi
 }
 
-# Function to display the menu and handle user selection
 # Function to display the menu and handle user selection
 display_menu() {
     while true; do
