@@ -3,21 +3,7 @@
 # Function to display ASCII art intro
 display_intro() {
     clear
-    cat << "EOF"
-        _____                                                                                                                                                        _____                                    _____                                         _____                    
-   _____\    \     _____                    _____   ______   _____               ____     ___________          _____                _____   _____               _____\    \                    _____     _____\    \ ___________   _______    ______   _____\    \ ___________       
-  /    / |    |  /      |_             _____\    \ |\     \ |     |          ____\_  \__  \          \       /      |_         _____\    \_|\    \             /    / |    |              _____\    \   /    / |    |\          \  \      |  |      | /    / |    |\          \      
- /    /  /___/| /         \           /    / \    |\ \     \|     |         /     /     \  \    /\    \     /         \       /     /|     |\\    \           /    /  /___/|             /    / \    | /    /  /___/| \    /\    \  |     /  /     /|/    /  /___/| \    /\    \     
-|    |__ |___|/|     /\    \         |    |  /___/| \ \           |        /     /\      |  |   \_\    |   |     /\    \     /     / /____/| \\    \         |    |__ |___|/            |    |  /___/||    |__ |___|/  |   \_\    | |\    \  \    |/|    |__ |___|/  |   \_\    |    
-|       \      |    |  |    \     ____\    \ |   ||  \ \____      |       |     |  |     |  |      ___/    |    |  |    \   |     | |____|/   \|    | ______ |       \               ____\    \ |   |||       \        |      ___/  \ \    \ |    | |       \        |      ___/     
-|     __/ __   |     \/      \   /    /\    \|___|/   \|___/     /|       |     |  |     |  |      \  ____ |     \/      \  |     |  _____     |    |/      \|     __/ __           /    /\    \|___|/|     __/ __     |      \  ____\|     \|    | |     __/ __     |      \  ____  
-|\    \  /  \  |\      /\     \ |    |/ \    \            /     / |       |     | /     /| /     /\ \/    \|\      /\     \ |\     \|\    \    /            ||\    \  /  \         |    |/ \    \     |\    \  /  \   /     /\ \/    \|\         /| |\    \  /  \   /     /\ \/    \ 
-| \____\/    | | \_____\ \_____\|\____\ /____/|          /_____/  /       |\     \_____/ |/_____/ |\______|| \_____\ \_____\| \_____\|    |   /_____/\_____/|| \____\/    |        |\____\ /____/|    | \____\/    | /_____/ |\______|| \_______/ | | \____\/    | /_____/ |\______| 
-| |    |____/| | |     | |     || |   ||    | |          |     | /        | \_____\   | / |     | | |     || |     | |     || |     /____/|  |      | |    ||| |    |____/|        | |   ||    | |    | |    |____/| |     | | |     | \ |     | /  | |    |____/| |     | | |     | 
- \|____|   | |  \|_____|\|_____| \|___||____|/           |_____|/          \ |    |___|/  |_____|/ \|_____| \|_____|\|_____| \|_____|    ||  |______|/|____|/ \|____|   | |         \|___||____|/      \|____|   | | |_____|/ \|_____|  \|_____|/    \|____|   | | |_____|/ \|_____| 
-       |___|/                                                               \|____|                                                 |____|/                         |___|/                                   |___|/                                        |___|/                    
-EOF
-    cat << "EOF"
+ cat << "EOF"
  /$$$$$$$                                          /$$         /$$                                         /$$                
 | $$__  $$                                        | $$        | $$                                        | $$                
 | $$  \ $$  /$$$$$$   /$$$$$$  /$$   /$$  /$$$$$$ | $$$$$$$  /$$$$$$   /$$   /$$  /$$$$$$  /$$   /$$      | $$$$$$$  /$$   /$$
@@ -167,75 +153,77 @@ install_froxlor() {
 }
 
 # Function to display the menu and handle user selection
+# Function to display the menu and handle user selection
 display_menu() {
-    echo "Select a web panel to install:"
-    echo "1. CasaOS"
-    echo "2. CloudPanel"
-    echo "3. aaPanel"
-    echo "4. Webmin"
-    echo "5. ISPConfig"
-    echo "6. Froxlor"
-    echo "7. Exit"
-    read -p "Enter your choice [1-7]: " choice
+    while true; do
+        echo "Select a web panel to install:"
+        echo "1. CasaOS"
+        echo "2. CloudPanel"
+        echo "3. aaPanel"
+        echo "4. Webmin"
+        echo "5. ISPConfig"
+        echo "6. Froxlor"
+        echo "7. Exit"
+        read -p "Enter your choice [1-7]: " choice
 
-    case $choice in
-        1)
-            if ! command_exists casaos; then
-                echo "CasaOS is not installed. Installing..."
-                install_casaos
-            else
-                echo "CasaOS is already installed."
-            fi
-            ;;
-        2)
-            if ! command_exists cloudpanel; then
-                echo "CloudPanel is not installed. Installing..."
-                install_cloudpanel
-            else
-                echo "CloudPanel is already installed."
-            fi
-            ;;
-        3)
-            if ! command_exists aapanel; then
-                echo "aaPanel is not installed. Installing..."
-                install_aapanel
-            else
-                echo "aaPanel is already installed."
-            fi
-            ;;
-        4)
-            if ! command_exists webmin; then
-                echo "Webmin is not installed. Installing..."
-                install_webmin
-            else
-                echo "Webmin is already installed."
-            fi
-            ;;
-        5)
-            if ! command_exists ispconfig; then
-                echo "ISPConfig is not installed. Installing..."
-                install_ispconfig
-            else
-                echo "ISPConfig is already installed."
-            fi
-            ;;
-        6)
-            if ! command_exists froxlor; then
-                echo "Froxlor is not installed. Installing..."
-                install_froxlor
-            else
-                echo "Froxlor is already installed."
-            fi
-            ;;
-        7)
-            echo "Exiting..."
-            exit 0
-            ;;
-        *)
-            echo "Invalid option. Exiting..."
-            exit 1
-            ;;
-    esac
+        case $choice in
+            1)
+                if ! command_exists casaos; then
+                    echo "CasaOS is not installed. Installing..."
+                    install_casaos
+                else
+                    echo "CasaOS is already installed."
+                fi
+                ;;
+            2)
+                if ! command_exists cloudpanel; then
+                    echo "CloudPanel is not installed. Installing..."
+                    install_cloudpanel
+                else
+                    echo "CloudPanel is already installed."
+                fi
+                ;;
+            3)
+                if ! command_exists aapanel; then
+                    echo "aaPanel is not installed. Installing..."
+                    install_aapanel
+                else
+                    echo "aaPanel is already installed."
+                fi
+                ;;
+            4)
+                if ! command_exists webmin; then
+                    echo "Webmin is not installed. Installing..."
+                    install_webmin
+                else
+                    echo "Webmin is already installed."
+                fi
+                ;;
+            5)
+                if ! command_exists ispconfig; then
+                    echo "ISPConfig is not installed. Installing..."
+                    install_ispconfig
+                else
+                    echo "ISPConfig is already installed."
+                fi
+                ;;
+            6)
+                if ! command_exists froxlor; then
+                    echo "Froxlor is not installed. Installing..."
+                    install_froxlor
+                else
+                    echo "Froxlor is already installed."
+                fi
+                ;;
+            7)
+                echo "Exiting..."
+                exit 0
+                ;;
+            *)
+                echo "Invalid option. Please select a number between 1 and 7."
+                ;;
+        esac
+    done
 }
 
 # Display the menu and handle user selection
