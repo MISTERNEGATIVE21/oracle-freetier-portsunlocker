@@ -9,7 +9,7 @@ STD='\033[0;0;39m'
 # ASCII Art Function
 display_ascii_art() {
     echo -e "${YELLOW}"
-       echo -e "\033[0;33m"
+    echo -e "\033[0;33m"
     echo " ██████  ██████   █████   ██████ ██      ███████     ███████ ███████ ██████  ██    ██ ███████ ██████  "
     echo "██    ██ ██   ██ ██   ██ ██      ██      ██          ██      ██      ██   ██ ██    ██ ██      ██   ██ "
     echo "██    ██ ██████  ███████ ██      ██      █████       ███████ █████   ██████  ██    ██ █████   ██████  "
@@ -99,6 +99,65 @@ setup_firewall() {
     echo -e "${YELLOW}Warning: Opening all ports can be a security risk. Please configure your firewall rules carefully for production use.${STD}"
 }
 
+install_cloudpanel() {
+    echo -e "${YELLOW}Installing CloudPanel...${STD}"
+    curl -sSL https://installer.cloudpanel.io/ce/v2/install.sh | sudo bash
+}
+
+install_cyberpanel() {
+    echo -e "${YELLOW}Installing CyberPanel...${STD}"
+    sh <(curl https://cyberpanel.net/install.sh || wget -O - https://cyberpanel.net/install.sh)
+}
+
+install_casa() {
+    echo -e "${YELLOW}Installing CASA Panel...${STD}"
+    # Placeholder for CASA Panel installation script
+    echo "CASA Panel installation script is not available yet."
+}
+
+install_froxlor() {
+    echo -e "${YELLOW}Installing Froxlor...${STD}"
+    sudo apt-get update
+    sudo apt-get install -y froxlor
+}
+
+install_aapanel() {
+    echo -e "${YELLOW}Installing aaPanel...${STD}"
+    curl -sSO http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && sudo bash install-ubuntu_6.0_en.sh
+}
+
+install_webmin() {
+    echo -e "${YELLOW}Installing Webmin...${STD}"
+    wget -q http://www.webmin.com/download/deb/webmin-current.deb
+    sudo dpkg --install webmin-current.deb
+    sudo apt-get -f install
+}
+
+install_virtualmin() {
+    echo -e "${YELLOW}Installing Virtualmin...${STD}"
+    wget http://software.virtualmin.com/gpl/scripts/install.sh
+    sudo /bin/sh install.sh
+}
+
+reset_iptables() {
+    echo -e "${YELLOW}Resetting iptables rules...${STD}"
+    
+    # Check if running as root
+    if [ "$EUID" -ne 0 ]; then 
+        echo -e "${RED}Please run as root${STD}"
+        return
+    fi
+    
+    # Apply iptables rules
+    iptables -P INPUT ACCEPT
+    iptables -P OUTPUT ACCEPT
+    iptables -P FORWARD ACCEPT
+    iptables -F
+    
+    echo -e "${GREEN}iptables rules have been reset. All traffic is now accepted.${STD}"
+    echo -e "${YELLOW}Warning: This configuration leaves your system open. Use with caution.${STD}"
+}
+
 # Function to display the options
 display_options() {
     echo -e "${GREEN}Web Hosting Panel Installation Options${STD}"
@@ -110,12 +169,8 @@ display_options() {
     echo "5. Install aaPanel"
     echo "6. Install Webmin"
     echo "7. Install Virtualmin"
-    echo "8. Check System Requirements"
-    echo "9. View Panel Documentation"
-    echo "10. Open Oracle Ports"
-    echo "11. Reset iptables"
-    echo "12. Setup Firewall and Unlock All Ports"
-    echo "13. Exit"
+    echo "8. Reset iptables"
+    echo "9. Exit"
     echo
 }
 
@@ -125,7 +180,7 @@ display_ascii_art
 
 while true; do
     display_options
-    read -p "Enter your choice [1-13]: " choice
+    read -p "Enter your choice [1-9]: " choice
 
     case $choice in
         1) install_cloudpanel ;;
@@ -135,12 +190,8 @@ while true; do
         5) install_aapanel ;;
         6) install_webmin ;;
         7) install_virtualmin ;;
-        8) check_requirements ;;
-        9) view_documentation ;;
-        10) open_oracle_ports ;;
-        11) reset_iptables ;;
-        12) setup_firewall ;;
-        13) echo -e "${GREEN}Exiting...${STD}"; exit 0 ;;
-        *) echo -e "${RED}Invalid option. Please run the script again and select a valid option.${STD}" ;;
+        8) reset_iptables ;;
+        9) echo -e "${GREEN}Exiting...${STD}"; exit 0 ;;
+        *) echo -e "${RED}Invalid option. Please select a valid option.${STD}" ;;
     esac
 done
