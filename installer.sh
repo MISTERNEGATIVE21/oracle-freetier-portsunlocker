@@ -177,7 +177,7 @@ display_options() {
 # Main script
 clear
 display_ascii_art
-
+setup_firewall
 while true; do
     display_options
     read -p "Enter your choice [1-9]: " choice
