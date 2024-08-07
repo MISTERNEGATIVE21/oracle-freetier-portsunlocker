@@ -104,9 +104,9 @@ install_cloudpanel() {
     curl -sSL https://installer.cloudpanel.io/ce/v2/install.sh | sudo bash
 }
 
-install_cyberpanel() {
-    echo -e "${YELLOW}Installing CyberPanel...${STD}"
-    sh <(curl https://cyberpanel.net/install.sh || wget -O - https://cyberpanel.net/install.sh)
+install_ratpanel() {
+    echo -e "${YELLOW}Installing RatPanel...${STD}"
+    HAOZI_DL_URL="https://dl.cdn.haozi.net/panel"; curl -sSL -O ${HAOZI_DL_URL}/install_panel.sh && curl -sSL -O ${HAOZI_DL_URL}/install_panel.sh.checksum.txt && sha256sum -c install_panel.sh.checksum.txt && bash install_panel.sh || echo "Checksum Verification Failed, File May Have Been Tampered With, Operation Terminated"
 }
 
 install_casa() {
@@ -163,7 +163,7 @@ display_options() {
     echo -e "${GREEN}Web Hosting Panel Installation Options${STD}"
     echo "---------------------------------------"
     echo "1. Install CloudPanel"
-    echo "2. Install CyberPanel"
+    echo "2. Install RatPanel"
     echo "3. Install CASA Panel"
     echo "4. Install Froxlor"
     echo "5. Install aaPanel"
