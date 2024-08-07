@@ -1,57 +1,67 @@
 #!/bin/bash
+# A menu-driven shell script sample template 
 
-# Variables
+# ----------------------------------
+# Step #1: Define variables
+# ----------------------------------
+EDITOR=vim
+PASSWD=/etc/passwd
 RED='\033[0;41;30m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
 STD='\033[0;0;39m'
 
-# Functions
+# ----------------------------------
+# Step #2: User defined function
+# ----------------------------------
 pause() {
   read -p "Press [Enter] key to continue..." fackEnterKey
 }
 
-install_apache() {
-    echo -e "${YELLOW}Installing Apache...${STD}"
-    # Add actual Apache installation commands here
-    echo -e "${GREEN}Apache installed successfully.${STD}"
+one() {
+    echo "one() called"
     pause
 }
 
-install_nginx() {
-    echo -e "${YELLOW}Installing Nginx...${STD}"
-    # Add actual Nginx installation commands here
-    echo -e "${GREEN}Nginx installed successfully.${STD}"
+two() {
+    echo "two() called"
     pause
 }
 
-show_menu() {
+# function to display menus
+show_menus() {
     clear
-    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo " Web Panel Installer Menu "
-    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo "1. Install Apache"
-    echo "2. Install Nginx"
+    echo "~~~~~~~~~~~~~~~~~~~~~"
+    echo " M A I N - M E N U"
+    echo "~~~~~~~~~~~~~~~~~~~~~"
+    echo "1. Set Terminal"
+    echo "2. Reset Terminal"
     echo "3. Exit"
 }
 
-read_option() {
+# read input from the keyboard and take an action
+# invoke the one() when the user selects 1 from the menu option.
+# invoke the two() when the user selects 2 from the menu option.
+# Exit when the user selects 3 from the menu option.
+read_options() {
     local choice
-    read -p "Enter choice [ 1 - 3 ] " choice
+    read -p "Enter choice [ 1 - 3] " choice
     case $choice in
-        1) install_apache ;;
-        2) install_nginx ;;
-        3) exit 0;;
-        *) echo -e "${RED}Error: Invalid option...${STD}" && sleep 2
+        1) one ;;
+        2) two ;;
+        3) exit 0 ;;
+        *) echo -e "${RED}Error...${STD}" && sleep 2
     esac
 }
 
-# Trap CTRL+C, CTRL+Z and quit signals
+# ----------------------------------------------
+# Step #3: Trap CTRL+C, CTRL+Z and quit signals
+# ----------------------------------------------
 trap '' SIGINT SIGQUIT SIGTSTP
 
-# Main loop
+# -----------------------------------
+# Step #4: Main logic - infinite loop
+# ------------------------------------
 while true
 do
-    show_menu
-    read_option
+    show_menus
+    read_options
 done
