@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# Function to display the menu
-display_menu() {
-    clear
-    echo "Web Hosting Panel Installation Menu"
-    echo "------------------------------------"
+# Function to display the options
+display_options() {
+    echo "Web Hosting Panel Installation Options"
+    echo "---------------------------------------"
     echo "1. Install CloudPanel"
     echo "2. Install CyberPanel"
     echo "3. Install CASA Panel"
@@ -33,14 +32,12 @@ install_cyberpanel() {
 # Function to install CASA Panel
 install_casa() {
     echo "Installing CASA Panel..."
-    # CASA Panel doesn't have a one-line installer, so we'd need to provide manual instructions
     echo "Please visit https://github.com/casaos/casaos for installation instructions."
 }
 
 # Function to install Froxlor
 install_froxlor() {
     echo "Installing Froxlor..."
-    # Froxlor doesn't have a one-line installer, so we'd need to provide manual instructions
     echo "Please visit https://froxlor.org/install for installation instructions."
 }
 
@@ -104,24 +101,20 @@ view_documentation() {
     esac
 }
 
-# Main loop
-while true; do
-    display_menu
-    read -p "Enter your choice [1-10]: " choice
+# Main script
+display_options
+read -p "Enter your choice [1-10]: " choice
 
-    case $choice in
-        1) install_cloudpanel ;;
-        2) install_cyberpanel ;;
-        3) install_casa ;;
-        4) install_froxlor ;;
-        5) install_aapanel ;;
-        6) install_webmin ;;
-        7) install_virtualmin ;;
-        8) check_requirements ;;
-        9) view_documentation ;;
-        10) echo "Exiting..."; exit 0 ;;
-        *) echo "Invalid option. Please try again." ;;
-    esac
-
-    read -p "Press Enter to continue..."
-done
+case $choice in
+    1) install_cloudpanel ;;
+    2) install_cyberpanel ;;
+    3) install_casa ;;
+    4) install_froxlor ;;
+    5) install_aapanel ;;
+    6) install_webmin ;;
+    7) install_virtualmin ;;
+    8) check_requirements ;;
+    9) view_documentation ;;
+    10) echo "Exiting..."; exit 0 ;;
+    *) echo "Invalid option. Please run the script again and select a valid option." ;;
+esac
