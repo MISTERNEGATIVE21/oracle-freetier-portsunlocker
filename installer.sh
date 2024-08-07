@@ -55,44 +55,6 @@ install_firewalld() {
     fi
 }
 
-#!/bin/bash
-
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-# Function to display ASCII art intro with gradient
-display_intro() {
-    clear
-    echo -e "\e[1;33m"
-    figlet "EASY ORACLE-SERVER" | toilet --filter border:metal
-    echo -e "\e[0m"
-}
-
-# Call the function to display the intro
-display_intro
-
-# Determine the OS and install firewalld if not installed
-if [ -f /etc/os-release ]; then
-    . /etc/os-release
-    OS=$ID
-else
-    OS=$(uname -s)
-fi
-
-install_firewalld() {
-    if [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
-        sudo apt-get update
-        sudo apt-get install -y firewalld
-    elif [ "$OS" = "centos" ] || [ "$OS" = "rhel" ] || [ "$OS" = "fedora" ]; then
-        sudo yum install -y firewalld
-    else
-        echo "Unsupported OS"
-        exit 1
-    fi
-}
-
 # Check if firewalld is installed, if not, install it
 if ! command_exists firewalld; then
     echo "firewalld is not installed. Installing..."
@@ -205,52 +167,28 @@ display_menu() {
 
         case $choice in
             1)
-                if ! command_exists casaos; then
-                    echo "CasaOS is not installed. Installing..."
-                    install_casaos
-                else
-                    echo "CasaOS is already installed."
-                fi
+                echo "CasaOS is selected."
+                install_casaos
                 ;;
             2)
-                if ! command_exists cloudpanel; then
-                    echo "CloudPanel is not installed. Installing..."
-                    install_cloudpanel
-                else
-                    echo "CloudPanel is already installed."
-                fi
+                echo "CloudPanel is selected."
+                install_cloudpanel
                 ;;
             3)
-                if ! command_exists aapanel; then
-                    echo "aaPanel is not installed. Installing..."
-                    install_aapanel
-                else
-                    echo "aaPanel is already installed."
-                fi
+                echo "aaPanel is selected."
+                install_aapanel
                 ;;
             4)
-                if ! command_exists webmin; then
-                    echo "Webmin is not installed. Installing..."
-                    install_webmin
-                else
-                    echo "Webmin is already installed."
-                fi
+                echo "Webmin is selected."
+                install_webmin
                 ;;
             5)
-                if ! command_exists ispconfig; then
-                    echo "ISPConfig is not installed. Installing..."
-                    install_ispconfig
-                else
-                    echo "ISPConfig is already installed."
-                fi
+                echo "ISPConfig is selected."
+                install_ispconfig
                 ;;
             6)
-                if ! command_exists froxlor; then
-                    echo "Froxlor is not installed. Installing..."
-                    install_froxlor
-                else
-                    echo "Froxlor is already installed."
-                fi
+                echo "Froxlor is selected."
+                install_froxlor
                 ;;
             7)
                 echo "Exiting..."
