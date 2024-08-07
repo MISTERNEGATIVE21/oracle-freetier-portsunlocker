@@ -111,7 +111,7 @@ install_cyberpanel() {
 
 install_casa() {
     echo -e "${YELLOW}Installing CASA Panel...${STD}"
-    # Placeholder for CASA Panel installation script
+    curl -fsSL https://get.casaos.io | sudo bash
     echo "CASA Panel installation script is not available yet."
 }
 
