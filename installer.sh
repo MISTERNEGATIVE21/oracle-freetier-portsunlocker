@@ -3,27 +3,19 @@
 # Function to display ASCII art intro
 display_intro() {
     clear
- cat << "EOF"
- /$$$$$$$                                          /$$         /$$                                         /$$                
-| $$__  $$                                        | $$        | $$                                        | $$                
-| $$  \ $$  /$$$$$$   /$$$$$$  /$$   /$$  /$$$$$$ | $$$$$$$  /$$$$$$   /$$   /$$  /$$$$$$  /$$   /$$      | $$$$$$$  /$$   /$$
-| $$$$$$$/ /$$__  $$ /$$__  $$| $$  | $$ /$$__  $$| $$__  $$|_  $$_/  | $$  | $$ /$$__  $$| $$  | $$      | $$__  $$| $$  | $$
-| $$__  $$| $$  \__/| $$  \ $$| $$  | $$| $$  \ $$| $$  \ $$  | $$    | $$  | $$| $$  \ $$| $$  | $$      | $$  \ $$| $$  | $$
-| $$  \ $$| $$      | $$  | $$| $$  | $$| $$  | $$| $$  | $$  | $$ /$$| $$  | $$| $$  | $$| $$  | $$      | $$  | $$| $$  | $$
-| $$$$$$$/| $$      |  $$$$$$/|  $$$$$$/|  $$$$$$$| $$  | $$  |  $$$$/|  $$$$$$$|  $$$$$$/|  $$$$$$/      | $$$$$$$/|  $$$$$$$
-|_______/ |__/       \______/  \______/  \____  $$|__/  |__/   \___/   \____  $$ \______/  \______/       |_______/  \____  $$
-                                         /$$  \ $$                     /$$  | $$                                     /$$  | $$
-                                        |  $$$$$$/                    |  $$$$$$/                                    |  $$$$$$/
-                                         \______/                      \______/                                      \______/ 
-EOF
     cat << "EOF"
- ___ __ __    ________  ______   _________  ______   ______        ___   __    ______   _______    ________   _________  ________  __   __   ______      
-/__//_//_/\  /_______/\/_____/\ /________/\/_____/\ /_____/\      /__/\ /__/\ /_____/\ /______/\  /_______/\ /________/\/_______/\/_/\ /_/\ /_____/\     
-\::\| \| \ \ \__.::._\/\::::_\/_\__.::.__\/\::::_\/_\:::_ \ \     \::\_\\  \ \\::::_\/_\::::__\/__\::: _  \ \\__.::.__\/\__.::._\/\:\ \\ \ \\::::_\/_    
- \:.      \ \   \::\ \  \:\/___/\  \::\ \   \:\/___/\\:(_) ) )_    \:. `-\  \ \\:\/___/\\:\ /____/\\::(_)  \ \  \::\ \     \::\ \  \:\ \\ \ \\:\/___/\   
-  \:.\-/\  \ \  _\::\ \__\_::._\:\  \::\ \   \::___\/_\: __ `\ \    \:. _    \ \\::___\/_\:\\_  _\/ \:: __  \ \  \::\ \    _\::\ \__\:\_/.:\ \\::___\/_  
-   \. \  \  \ \/__\::\__/\ /____\:\  \::\ \   \:\____/\\ \ `\ \ \    \. \`-\  \ \\:\____/\\:\_\ \ \  \:.\ \  \ \  \::\ \  /__\::\__/\\ ..::/ / \:\____/\ 
-    \__\/ \__\/\________\/ \_____\/   \__\/    \_____\/ \_\/ \_\/     \__\/ \__\/ \_____\/ \_____\/   \__\/\__\/   \__\/  \________\/ \___/_(   \_____\/ 
+  ____                   _   _              
+ / ___| ___   ___   __ _| |_| |_ ___  _ __  
+| |  _ / _ \ / _ \ / _` | __| __/ _ \| '_ \ 
+| |_| | (_) | (_) | (_| | |_| || (_) | | | |
+ \____|\___/ \___/ \__,_|\__|\__\___/|_| |_|
+                                           
+  ____  ____   ____  ____   ____  
+ / ___||  _ \ / ___||  _ \ / ___| 
+ \___ \| |_) | |    | |_) | |     
+  ___) |  __/| |___ |  __/| |___  
+ |____/|_|    \____||_|    \____| 
+
 EOF
 }
 
@@ -154,54 +146,53 @@ install_froxlor() {
 
 # Function to display the menu and handle user selection
 display_menu() {
-    while true; do
-        echo "Select a web panel to install:"
-        echo "1. CasaOS"
-        echo "2. CloudPanel"
-        echo "3. aaPanel"
-        echo "4. Webmin"
-        echo "5. ISPConfig"
-        echo "6. Froxlor"
-        echo "7. Exit"
-        read -p "Enter your choice [1-7]: " choice
-
-        case $choice in
-            1)
-                echo "CasaOS is selected."
-                install_casaos
-                ;;
-            2)
-                echo "CloudPanel is selected."
-                install_cloudpanel
-                ;;
-            3)
-                echo "aaPanel is selected."
-                install_aapanel
-                ;;
-            4)
-                echo "Webmin is selected."
-                install_webmin
-                ;;
-            5)
-                echo "ISPConfig is selected."
-                install_ispconfig
-                ;;
-            6)
-                echo "Froxlor is selected."
-                install_froxlor
-                ;;
-            7)
-                echo "Exiting..."
-                exit 0
-                ;;
-            *)
-                echo "Invalid option. Please select a number between 1 and 7."
-                ;;
-        esac
-    done
+    echo "Select a web panel to install:"
+    echo "1. CasaOS"
+    echo "2. CloudPanel"
+    echo "3. aaPanel"
+    echo "4. Webmin"
+    echo "5. ISPConfig"
+    echo "6. Froxlor"
+    echo "7. Exit"
 }
 
 # Display the menu and handle user selection
-display_menu
+while true; do
+    display_menu
+    read -p "Enter your choice [1-7]: " choice
+    case $choice in
+        1)
+            echo "CasaOS is selected."
+            install_casaos
+            ;;
+        2)
+            echo "CloudPanel is selected."
+            install_cloudpanel
+            ;;
+        3)
+            echo "aaPanel is selected."
+            install_aapanel
+            ;;
+        4)
+            echo "Webmin is selected."
+            install_webmin
+            ;;
+        5)
+            echo "ISPConfig is selected."
+            install_ispconfig
+            ;;
+        6)
+            echo "Froxlor is selected."
+            install_froxlor
+            ;;
+        7)
+            echo "Exiting..."
+            exit 0
+            ;;
+        *)
+            echo "Invalid option. Please select a number between 1 and 7."
+            ;;
+    esac
+done
 
 echo "Script execution completed."
