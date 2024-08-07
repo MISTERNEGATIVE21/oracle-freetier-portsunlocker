@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ASCII Art Function
 display_ascii_art() {
@@ -46,7 +46,7 @@ install_cloudpanel() {
 # Function to install CyberPanel
 install_cyberpanel() {
     echo "Installing CyberPanel..."
-    sh <(curl https://cyberpanel.net/install.sh || wget -O - https://cyberpanel.net/install.sh)
+    sh <(curl -s https://cyberpanel.net/install.sh || wget -q -O - https://cyberpanel.net/install.sh)
 }
 
 # Function to install CASA Panel
