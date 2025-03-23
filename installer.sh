@@ -112,7 +112,7 @@ install_ratpanel() {
 install_casa() {
     echo -e "${YELLOW}Installing CASA Panel...${STD}"
     curl -fsSL https://get.casaos.io | sudo bash
-    echo "CASA Panel installation script is not available yet."
+    echo "CASA Panel installation script executed."
 }
 
 install_froxlor() {
@@ -158,6 +158,26 @@ reset_iptables() {
     echo -e "${YELLOW}Warning: This configuration leaves your system open. Use with caution.${STD}"
 }
 
+install_tailscale() {
+    echo -e "${YELLOW}Installing Tailscale...${STD}"
+    curl -fsSL https://tailscale.com/install.sh | sudo bash
+    echo -e "${GREEN}Tailscale installed. Run 'sudo tailscale up' to configure and connect.${STD}"
+}
+
+install_web_utilities() {
+    echo -e "${YELLOW}Installing additional web utilities (nginx, curl, wget, git)...${STD}"
+    if [ -f /etc/debian_version ]; then
+        sudo apt-get update
+        sudo apt-get install -y nginx curl wget git
+    elif [ -f /etc/redhat-release ]; then
+        sudo yum install -y nginx curl wget git
+    else
+        echo -e "${RED}Unsupported OS for web utilities installation${STD}"
+        return
+    fi
+    echo -e "${GREEN}Web utilities (nginx, curl, wget, git) installed successfully.${STD}"
+}
+
 # Function to display the options
 display_options() {
     echo -e "${GREEN}Web Hosting Panel Installation Options${STD}"
@@ -170,7 +190,9 @@ display_options() {
     echo "6. Install Webmin"
     echo "7. Install Virtualmin"
     echo "8. Reset iptables"
-    echo "9. Exit"
+    echo "9. Install Tailscale"
+    echo "10. Install Web Utilities (nginx, curl, wget, git)"
+    echo "11. Exit"
     echo
 }
 
@@ -180,18 +202,20 @@ display_ascii_art
 setup_firewall
 while true; do
     display_options
-    read -p "Enter your choice [1-9]: " choice
+    read -p "Enter your choice [1-11]: " choice
 
     case $choice in
         1) install_cloudpanel ;;
-        2) install_cyberpanel ;;
+        2) install_ratpanel ;;  # Fixed from install_cyberpanel
         3) install_casa ;;
         4) install_froxlor ;;
         5) install_aapanel ;;
         6) install_webmin ;;
         7) install_virtualmin ;;
         8) reset_iptables ;;
-        9) echo -e "${GREEN}Exiting...${STD}"; exit 0 ;;
+        9) install_tailscale ;;
+        10) install_web_utilities ;;
+        11) echo -e "${GREEN}Exiting...${STD}"; exit 0 ;;
         *) echo -e "${RED}Invalid option. Please select a valid option.${STD}" ;;
     esac
 done
