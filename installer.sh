@@ -178,6 +178,134 @@ install_web_utilities() {
     echo -e "${GREEN}Web utilities (nginx, curl, wget, git) installed successfully.${STD}"
 }
 
+# NEW FUNCTION: Setup Tailscale Exit Node with proper port configuration
+setup_tailscale_exit_node() {
+    echo -e "${YELLOW}Setting up Tailscale as Exit Node with Port Configuration...${STD}"
+    
+    # Check if running as root
+    if [ "$EUID" -ne 0 ]; then 
+        echo -e "${RED}Please run as root${STD}"
+        return
+    fi
+    
+    # Install Tailscale if not already installed
+    if ! command -v tailscale &> /dev/null; then
+        echo -e "${YELLOW}Installing Tailscale...${STD}"
+        curl -fsSL https://tailscale.com/install.sh | sudo bash
+    else
+        echo -e "${GREEN}Tailscale already installed.${STD}"
+    fi
+    
+    # Configure IP forwarding for both IPv4 and IPv6
+    echo -e "${YELLOW}Enabling IP forwarding (critical for exit node functionality)...${STD}"
+    
+    echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+    echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+    sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+    
+    # Verify IP forwarding is enabled
+    ip_forward=$(cat /proc/sys/net/ipv4/ip_forward)
+    if [ "$ip_forward" != "1" ]; then
+        echo -e "${RED}Warning: IP forwarding is not enabled. Trying alternative method...${STD}"
+        echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+        ip_forward=$(cat /proc/sys/net/ipv4/ip_forward)
+        if [ "$ip_forward" != "1" ]; then
+            echo -e "${RED}Failed to enable IP forwarding. Exit node will not work.${STD}"
+        else
+            echo -e "${GREEN}IP forwarding successfully enabled.${STD}"
+        fi
+    else
+        echo -e "${GREEN}IP forwarding successfully enabled.${STD}"
+    fi
+    
+    # Configure NAT for Tailscale
+    echo -e "${YELLOW}Configuring NAT for Tailscale...${STD}"
+    
+    # Get main interface
+    MAIN_INTERFACE=$(ip route | grep default | awk '{print $5}')
+    echo -e "${GREEN}Using ${MAIN_INTERFACE} as the main network interface${STD}"
+    
+    # Configure iptables rules for NAT
+    sudo iptables -t nat -A POSTROUTING -o ${MAIN_INTERFACE} -j MASQUERADE
+    sudo iptables -A FORWARD -i tailscale0 -j ACCEPT
+    sudo iptables -A FORWARD -o tailscale0 -j ACCEPT
+    
+    # Make iptables rules persistent
+    echo -e "${YELLOW}Making iptables rules persistent...${STD}"
+    
+    if command -v netfilter-persistent &> /dev/null; then
+        sudo netfilter-persistent save
+    elif command -v iptables-save &> /dev/null; then
+        if [ -d "/etc/iptables" ]; then
+            sudo iptables-save > /etc/iptables/rules.v4
+        elif [ -d "/etc/sysconfig" ]; then
+            sudo iptables-save > /etc/sysconfig/iptables
+        else
+            sudo mkdir -p /etc/iptables
+            sudo iptables-save > /etc/iptables/rules.v4
+            echo "#!/bin/sh" | sudo tee /etc/network/if-up.d/iptables
+            echo "iptables-restore < /etc/iptables/rules.v4" | sudo tee -a /etc/network/if-up.d/iptables
+            sudo chmod +x /etc/network/if-up.d/iptables
+        fi
+    fi
+    
+    # Configure firewall to allow Tailscale ports
+    echo -e "${YELLOW}Opening required ports for Tailscale...${STD}"
+    
+    if command -v ufw &> /dev/null; then
+        sudo ufw allow 41641/udp comment "Tailscale"
+        sudo ufw allow 3478/udp comment "Tailscale STUN"
+        sudo ufw allow 50000:51000/udp comment "Tailscale DERP range"
+    elif command -v firewall-cmd &> /dev/null; then
+        sudo firewall-cmd --permanent --add-port=41641/udp
+        sudo firewall-cmd --permanent --add-port=3478/udp
+        sudo firewall-cmd --permanent --add-port=50000-51000/udp
+        sudo firewall-cmd --reload
+    else
+        echo -e "${YELLOW}No firewall detected. Ensuring ports are open with iptables...${STD}"
+        sudo iptables -A INPUT -p udp --dport 41641 -j ACCEPT
+        sudo iptables -A INPUT -p udp --dport 3478 -j ACCEPT
+        sudo iptables -A INPUT -p udp --dport 50000:51000 -j ACCEPT
+    fi
+    
+    # Display menu for Tailscale configuration
+    echo -e "${GREEN}Tailscale port configuration complete.${STD}"
+    echo -e "${YELLOW}Choose Tailscale authentication option:${STD}"
+    echo "1. Interactive authentication (requires browser access)"
+    echo "2. Auth key authentication (better for servers)"
+    echo "3. Skip authentication (if already authenticated)"
+    
+    read -p "Enter choice [1-3]: " auth_choice
+    case $auth_choice in
+        1)
+            echo -e "${YELLOW}Starting Tailscale with exit node functionality...${STD}"
+            sudo tailscale down
+            sudo tailscale up --advertise-exit-node --accept-routes
+            ;;
+        2)
+            read -p "Enter your Tailscale auth key: " auth_key
+            echo -e "${YELLOW}Starting Tailscale with exit node functionality using auth key...${STD}"
+            sudo tailscale down
+            sudo tailscale up --advertise-exit-node --accept-routes --auth-key "$auth_key"
+            ;;
+        3)
+            echo -e "${YELLOW}Reconfiguring Tailscale as exit node...${STD}"
+            sudo tailscale up --advertise-exit-node --accept-routes
+            ;;
+        *)
+            echo -e "${RED}Invalid option.${STD}"
+            ;;
+    esac
+    
+    # Check Tailscale status
+    echo -e "${YELLOW}Checking Tailscale status...${STD}"
+    sudo tailscale status
+    
+    echo -e "${GREEN}Tailscale exit node setup complete.${STD}"
+    echo -e "${YELLOW}Important: In the Tailscale admin console, enable exit nodes for your network${STD}"
+    echo -e "${YELLOW}On client devices, select this node as exit node to use it${STD}"
+}
+
 # Function to display the options
 display_options() {
     echo -e "${GREEN}Web Hosting Panel Installation Options${STD}"
@@ -192,7 +320,8 @@ display_options() {
     echo "8. Reset iptables"
     echo "9. Install Tailscale"
     echo "10. Install Web Utilities (nginx, curl, wget, git)"
-    echo "11. Exit"
+    echo "11. Setup Tailscale Exit Node with Port Configuration"
+    echo "12. Exit"
     echo
 }
 
@@ -202,11 +331,11 @@ display_ascii_art
 setup_firewall
 while true; do
     display_options
-    read -p "Enter your choice [1-11]: " choice
+    read -p "Enter your choice [1-12]: " choice
 
     case $choice in
         1) install_cloudpanel ;;
-        2) install_ratpanel ;;  # Fixed from install_cyberpanel
+        2) install_ratpanel ;;
         3) install_casa ;;
         4) install_froxlor ;;
         5) install_aapanel ;;
@@ -215,7 +344,8 @@ while true; do
         8) reset_iptables ;;
         9) install_tailscale ;;
         10) install_web_utilities ;;
-        11) echo -e "${GREEN}Exiting...${STD}"; exit 0 ;;
+        11) setup_tailscale_exit_node ;;
+        12) echo -e "${GREEN}Exiting...${STD}"; exit 0 ;;
         *) echo -e "${RED}Invalid option. Please select a valid option.${STD}" ;;
     esac
 done
